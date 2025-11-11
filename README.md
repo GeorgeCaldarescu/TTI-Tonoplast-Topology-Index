@@ -1,100 +1,30 @@
 # TTI – Tonoplast Topology Index
-***Version 1.0 – user manual***
 
-***Helena Kočová, George A. Caldarescu, Fatima Cvrčková***   
+***Helena Kočová, George A. Caldarescu, Radek Bezvoda, Fatima Cvrčková***   
 **This project is licensed under the [Creative Commons Attribution 4.0 (CC-BY-4.0)](LICENSE), 2025**
 
-<a href="https://doi.org/10.1101/2025.08.06.668875" target="_blank">doi.org/10.1101/2025.08.06.668875</a>
+<p> BiorXiv link: <a href="https://doi.org/10.1101/2025.08.06.668875" target="_blank">doi.org/10.1101/2025.08.06.668875</a> </p>
 
----
+<p> Publication link: <i>-will be added once available-</i></p>
+
+<p> More sample images available at the <a href="https://www.ebi.ac.uk/biostudies/bioimages/studies/S-BIAD2226" target="_blank">repository</a>. </p>
+
+
+## Abstract:
+
+<p> The plant vacuole arises by orchestrated interplay of membrane trafficking, cytoskeletal rearrangements and a variety of signalling pathways. In the root, the characteristic large central vacuole develops by endomembrane reorganization occurring mainly in the transition zone. The vacuole's bounding membrane - the tonoplast - can be visualized in vivo using fluorescent protein markers. The Vacuolar Morphology Index (VMI) is widely accepted as a quantitative measure of vacuole structure. However, this metric has two drawbacks - it only reflects the size of the largest vacuolar compartment (missing therefore possible differences in the organization of smaller compartments), and its determination is labor intensive, limiting its use on large datasets. Here we present an alternative metric for describing vacuole organization, named the Tonoplast Topology Index (TTI), which overcomes the above-mentioned shortcomings of the VMI. The protocol for TTI determination is provided as a two-stage semi-automated procedure involving microscopic image analysis employing an ImageJ macro and subsequent processing of numeric data in the Jupyter Notebook environment, together with benchmarking image data. Since this implementation is freeware-based, platform-independent and (relatively) user-friendly, we hope it will find its use as a high throughput, added value alternative to the VMI metric.</p>
+
 
 ## Package contents:
 
-* This document  
+* TTI version 1.0 user manual
 * ImageJ macro: Stage1.ijm  
 * Jupyter Notebook file: Stage2.ipynb
+* Sample data folder containing sample images and expected outputs (including description)
 
 **Required:** 
 
 * A PC running a recent version of ***Fiji*** ([http://fiji.sc/Fiji](http://fiji.sc/Fiji)), ***Jupyter notebook*** (typically installed as a part of the ***Anaconda*** package, see Appendix 1) and a spreadsheet program such as ***Microsoft Excel*** or ***Libre Office Calc***.  
-  * *Performance under different OS or on different system configurations may vary but the program has been successfully used on a PC with Intel Core 5 @ 3.1 GHz and 16 GB RAM running the Fiji distribution of ImageJ 1.54p, Anaconda 2.5.1 and MS Excel under a 64bit version of Win10 Enterprise. The instructions described here refer to the Windows environment.*  
 * Confocal microscopy images (preferably z-stacks) – either original files produced by the microscope´s software or standard \*.ome.tiff files (8-bit images are OK).  We are typically measuring atrichoblasts from isodiametric stage until the first cells with a large contiguous vacuole, which in our setup are about the length of \~1/2 screen.  
-  * *The workflow was not tested with multi-channel images, but it should be possible.*  
-  * *Images that do not carry correct and consistent scale information in their metadata can also be analysed if you define the scale manually in **Fij**i (e.g. by drawing a line of known size on a scale slide image and setting the scale as global).*
 
-**Conventions in this manual:**  
-Instructions in plain text, file/folder names and variable/parameter names in Courier, program and menu names in ***bold italics***, commands in **bold**, program output quotes in **Courier bold**, notes, remarks and comments in *italics*. 
-
-**Before you begin:**
-
-* Prepare a folder structure containing your image data. It is recommended to make a separate folder for each genotype or treatment (e.g., WT and mutant).  
-* Copy Stage1.ijm into a location on your local drive where you can easily find it. 
-
-## Stage 1
-
-1. Open ***Fiji***.  
-2. Drag Stage1.ijm onto the ***Fiji*** menu bar. This opens the interface of the macro.  
-3. Select the first file to be analyzed and open it by dragging onto the ***Fiji*** menu bar.   
-4. In the ***Bio-Formats import Options*** dialog box, select **View stack with Standard ImageJ**, **Stack order XYTZC**, **Use virtual stack**, **Split channels**. Make sure no other boxes are checked and click **OK**. Your stack will open.  
-   * *If working with a multichannel image, close the unwanted channels at this step.*  
-5. Set the parameters to be measured: in the ***Fiji*** menu, go to ***Analyze*** – ***Set Measurements***, check **Shape Descriptors** (and preferentially nothing else), and click **OK**.   
-   * *This needs to be done only once at the beginning or after doing something else in Fiji.*  
-6. Select an optical section that cuts several cells between top 1/3 \- 1/2 of the cell height, above the nucleus.   
-   * *You can later go back and select another slice for measuring more cells.*  
-7. Open the ***ROI manager*** (**Analyze – Tools – ROI Manager**). Check **Show all** and **Labels**.  
-8. Draw a linear transect across a cell for checking plot quality. **Add** it to ***ROI Manager***.    
-9. **Run** the macro and check whether the resulting graph shows peaks corresponding to visible membrane crossings and none other. The default value is working fine with our SDCM images.  
-   * If you are not happy with the graph, press **Cancel**, **kill** the macro, close the graph and duplicated image generated by it. Run the macro again and experiment with the Smooth parameter until you get a satisfactory graph (you might need to do this step several times).   
-10. If you are happy with the graph, follow the instructions in the macro´s dialog window up to pressing **Proceed** and receiving the final message informing you about output file location.   
-    * You will have the opportunity to input sample name at this stage. In the following part of this document, we will assume that it is named sample, which is the default.  
-11. You will find a new subfolder Results in your images folder, containing one summary file named sample\_length\_x.csv where x is the sample number (e.g. 1, 2, 3, etc) and multiple sample\_spectra\_x\_y.csv files, where x is the same number as in sample\_length\_x.csv and y is the number of the analyzed cell, which corresponds with the row numbers in the sample\_length\_x.csv file. These files will be used for Stage 2\.   
-    * *There will also be a zipped file with ROIs and an overlay image that you might find useful when troubleshooting. If you intend to keep these files, copy or move them somewhere else, because they get overwritten when you run the macro again, for example when going back to step 6 for another level of focus.*  
-12. To analyze next image, close everything except ***Fiji*** and the macro, open another image file and proceed to step 3\. Repeat until you have processed all your files and then exit ***Fiji***.
-
-**Before Stage 2:**
-
-* Copy one instance of Stage2.ipynb into each of the folders that contain your \*.csv files from Stage 1\.   
-  * Make sure that your files follow this naming convention: sample\_length\_x.csv and sample\_spectra\_x\_y.csv where sample is your sample name assigned in Stage 1 step 10, x is the plant (replica) and y is the cell label; x and y must be numbers (integers).  
-  * *CAUTION: the* \*.ipynb *file may get altered and overwritten in the process, keep a backup copy elsewhere.*
-
-## Stage 2
-
-* Open Stage2.ipynb in the folder containing your data from Stage 1 in ***Jupyter notebook*** (see Appendix 1 for instructions how to do it).  
-* Execute all blocks of code sequentially, examining output of each block for completeness and absence of error messages.   
-  * Make sure to manually examine the profile plots output to ascertain whether any false positive peaks have been detected (marked by a red x). Should this occur, it is necessary to adjust the parameters in the preceding cell accordingly and re-run that cell before continuing. Relevant parameters (with default values in brackets) are:  
-    * background: minimum intensity value to consider as peak (0)  
-    * med\_ratio: a multiplier of the median value to set threshold detection (0.9)  
-    * min\_ratio: a multiplier of the minimum value to filter peaks (1.4)  
-    * prominence: controls peak prominence, lower the value if missing peaks (0.1)  
-    * sigma: Gaussian smoothing; increase the value for noisy data possibly up to 1 (0.01)  
-  * At the penultimate block before saving the output, you will receive a scatter plot of transect length vs cell length. This serves as a data consistency check – the points should be located at, or close to, the diagonal. If you see any noticeable outliers, check for errors and inconsistencies in your input data.  
-  * Any plots generated in the course of the analysis can be copied from the on-screen output as \*.png if needed.  
-* At the end, results will be written into an Excel spreadsheet called output.xlsx in the same directory, which can be used for further statistical analysis.
-
-
-
-
-
-## Appendix 1: *Jupyter notebook* basics for newbies 
-
-**Setting up and starting *Jupyter notebook*** 
-
-* ***Jupyter notebook*** is a part of the ***Anaconda*** package ([https://www.anaconda.com/download](https://www.anaconda.com/download)).   
-  * If ***jupyter notebook*** is not installed, open ***anaconda prompt*** and type **conda install jupyter**. If asked for confirmation, type **y** and wait for installation to finish. You can also use the **conda install \<package name\>** command to install any missing package. Alternatively, you can use **pip install \<package name**\> in a python interface (such as ***jupyter notebook***). By default, ***python 3*** is used; if you have multiple python installations including ***python2***, use **pip3**.  
-  * The libraries required for running ***TTI*** should be included in the ***Anaconda*** installation, namely: ***os*** for file handling, ***pandas*** for data manipulation, ***numpy*** for numerical computations, ***matplotlib.pyplot*** for visualisation, ***scipy.signal*** for peak detection, ***scipy.ndimage*** for smoothing profiles.  
-* There are several possibilities to start ***Jupyter notebook***. The simplest are:  
-  * Open the ***Anaconda navigator*** app and open ***Powershell prompt*** from there. Navigate to the drive containing your \*.ipynb file using shell commands, type **jupyter notebook** and press enter.  
-  * Open the ***Anaconda prompt*** from the Windows start menu. Navigate to the drive containing your \*.ipynb file using shell commands, type **jupyter notebook** and press enter.
-
-  A command line will appear followed by a **Jupyter notebook** tab in your default browser. ***Jupyter notebook*** runs locally and does not require internet access once installed. Do not close the command line (you can minimize it) as it would disconnect the ***Jupyter notebook***.
-
-  * If you closed it accidentally and have unsaved data in your browser, you can renew it by starting another **Jupyter notebook** with a fresh command line.  
-* Navigate through the file system in the **Jupyter notebook** browser tab (single clicks to change directory), find your \*.ipynb file and run it by single-clicking.
-
-**Working in *Jupyter notebook*** 
-
-* ***Jupyter notebook*** is divided into multiple blocks (cells) of code, which you can run separately (unlike in other tools where you usually have to run whole code at once) – i.e., you are having a dialogue with the program, where you get an output of each step upon request.   
-* To run a block, locate cursor at its beginning and click the Run icon.  
-* During one session, it remembers all previous blocks of code you ran (unless overwritten), even if you deleted some code blocks in the meantime. However, this history is lost after restart (code blocks remain if you save the file).   
-* Some code blocks may take longer to process – wait until there is a number (for example **In \[1\]**) before running the next one, **\*** means the block is still running. You may also notice the notebook icon in the browser changing into hourglass with longer code and the computer might become slow. 
 
